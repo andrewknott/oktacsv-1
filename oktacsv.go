@@ -87,7 +87,7 @@ func main() {
 
 func ReturnTimeLastEvent(OktaOrg string, OktaKey string) string {
 
-	url := OktaOrg + "/api/v1/events?limit=100&filter=published%20gt%20%222017-12-03T05%3A20%3A48.000Z%22"
+	url := OktaOrg + "/api/v1/events?limit=100&filter=published%20gt%20%222017-12-03T05%3A20%3A48.000Z%22" 
 
 	req, _ := http.NewRequest("GET", url, nil)
 
