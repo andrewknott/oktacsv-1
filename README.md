@@ -7,10 +7,10 @@ It is very easy to Modify and Customize, and I hope others find it useful
 
 
 c:\oktacsv.exe https://yourORG.okta.com 0YOURKEYHERE-9UW4H9r6j6scgnzbzx0bePfRz <br/>
-OktaCSV by Patrick McDowell pmcdowell@okta.com <br/>
-``  / _ \| |_| |_ __ _ / __/ __\ \ / /``<br/>
-`` | (_) | / /  _/ _` | (__\__ \\ V /``<br/>
-``  \___/|_\_\\__\__,_|\___|___/ \_/``<br/>
+OktaCSV by Patrick McDowell pmcdowell@okta.com<br/>
+`` / _ \| |_| |_ __ _ / __/ __\ \ / /``<br/>
+``| (_) | / /  _/ _` | (__\__ \\ V /``<br/>
+`` \___/|_\_\\__\__,_|\___|___/ \_/``<br/>
 <br/>
 OktaCSV is checking to see what time it is in OktaLand, and starting to follow the System Log<br/>
 This can take a few seconds, but it is worth the wait<br/>
