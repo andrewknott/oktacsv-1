@@ -101,30 +101,19 @@ func ReturnTimeLastEvent(OktaOrg string, OktaKey string) string {
 
 	defer res.Body.Close()
 
-	date := string(res.Header.Get("Date"))
-	//dateSplit := strings.Fields(date)
-	//
-	//
-	//current := time.Now().UTC()
-	//currentMonth := int(current.Month())
-
-	//returnString := fmt.Sprintf("%s-%d-%sT%s.000Z", dateSplit[3], currentMonth, dateSplit[1], dateSplit[4])
+	date := string(res.Header.Get("Date"))	 
 
 	t, err := time.Parse(time.RFC1123, date)
 	if err != nil {
 		fmt.Println("parse error", err.Error())
 	}
-	fmt.Println(t.Format(time.ANSIC))
 
-	location, err := time.LoadLocation("America/Los_Angeles")
+	threeHours := time.Hour * 6 * -1
+	newTime := t.Add(threeHours) // 6 hours actually
 
-	if err != nil {
-		fmt.Println(err)
-	}
+	fmt.Println(newTime.Format(time.ANSIC))
 
-	//fmt.Println("Location : ", location, " Time : ", t.In(location).Format("2006-01-02T15:04:05"))
-
-	returnString:= t.In(location).Format("2006-01-02T15:04:05")+".000Z"
+	returnString:= newTime.Format("2006-01-02T15:04:05")+".000Z"
 
 	fmt.Fprintln(os.Stderr, "Current Time at Okta is:"+returnString)
 
