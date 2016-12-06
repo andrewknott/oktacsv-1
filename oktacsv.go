@@ -101,7 +101,7 @@ func ReturnTimeLastEvent(OktaOrg string, OktaKey string) string {
 
 	defer res.Body.Close()
 
-	date := string(res.Header.Get("Date"))	 
+	date := string(res.Header.Get("Date"))
 
 	t, err := time.Parse(time.RFC1123, date)
 	if err != nil {
