@@ -10,6 +10,7 @@ import (
 	//"strconv"
 	"os"
 	//"strings"
+	"strings"
 )
 
 var OktaEvent []struct {
@@ -40,7 +41,15 @@ var OktaEvent []struct {
 
 func main() {
 
-	if len(os.Args) !=1  {
+	if len(os.Args) != 1 {
+
+		OktaOrg := strings.ToLower(os.Args[1]) //"https://hardCodeYourOktaOrg.oktapreview.com"
+		OktaKey := os.Args[2] //"Your key"
+
+		if (  ! strings.HasPrefix(OktaOrg, "https://")) {
+			fmt.Fprintln(os.Stderr, "Your Okta Org should begin with https://")
+			os.Exit(0);
+		}
 
 		fmt.Fprintln(os.Stderr, "OktaCSV by Patrick McDowell pmcdowell@okta.com")
 
@@ -52,26 +61,26 @@ func main() {
 		fmt.Fprintln(os.Stderr, "\nOktaCSV is checking to see what time it is in OktaLand, and starting to follow the System Log")
 		fmt.Fprintln(os.Stderr, "This can take a few seconds, but it is worth the wait")
 
-
-		OktaOrg := os.Args[1] //"https://hardCodeYourOktaOrg.oktapreview.com"
-		OktaKey := os.Args[2] //"Your key"
-
 		lastEvent := ReturnTimeLastEvent(OktaOrg, OktaKey)
 
 		i := 1
 		for {
 			i += 1
-			duration := time.Second
+			duration := time.Second * 1
 			time.Sleep(duration)
 			events := GetOktaEvent(OktaOrg, OktaKey, "filter=published%20gt%20%22" + lastEvent + "%22")
 			OktaEvent = nil
 			json.Unmarshal([]byte (events), &OktaEvent)
 
-			if (OktaEvent != nil ) {
+			if (OktaEvent != nil && len (OktaEvent) !=0  ) {
 				for v := range OktaEvent {
-					fmt.Println(OktaEvent[v].Published + " , " + OktaEvent[v].Action.Message)
-					lastEvent = OktaEvent[len(OktaEvent) - 1].Published
+					fmt.Println(OktaEvent[v].Published + "," + OktaEvent[v].Action.Message)
+
 				}
+
+				lastEvent = OktaEvent[len(OktaEvent) - 1].Published
+				OktaEvent = nil
+
 			}
 		}
 	} else {
@@ -87,7 +96,7 @@ func main() {
 
 func ReturnTimeLastEvent(OktaOrg string, OktaKey string) string {
 
-	url := OktaOrg + "/api/v1/events?limit=100&filter=published%20gt%20%222017-12-03T05%3A20%3A48.000Z%22" 
+	url := OktaOrg + "/api/v1/events?limit=1&filter=published%20gt%20%222017-12-03T05%3A20%3A48.000Z%22"
 
 	req, _ := http.NewRequest("GET", url, nil)
 
@@ -104,18 +113,17 @@ func ReturnTimeLastEvent(OktaOrg string, OktaKey string) string {
 	date := string(res.Header.Get("Date"))
 
 	t, err := time.Parse(time.RFC1123, date)
+
 	if err != nil {
 		fmt.Println("parse error", err.Error())
 	}
 
-	threeHours := time.Hour * 6 * -1
-	newTime := t.Add(threeHours) // 6 hours actually
+	threeHours := time.Hour * 0
+	newTime := t.Add(threeHours) // 7 hours actually
 
-	fmt.Println(newTime.Format(time.ANSIC))
+	returnString := newTime.Format("2006-01-02T15:04:05") + ".000Z"
 
-	returnString:= newTime.Format("2006-01-02T15:04:05")+".000Z"
-
-	fmt.Fprintln(os.Stderr, "Current Time at Okta is:"+returnString)
+	fmt.Fprintln(os.Stderr, "Wait for Events after this Published Date:" + returnString + ". Events take some time to hit the Event Log")
 
 	return returnString
 }
